@@ -1,17 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+  Request
+} from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import { CreateScheduleDto } from './dto/create-schedule.dto';
-import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { AuthsGuard } from 'src/auth/guards/auth.guard';
+import { Schedule } from './entities/schedule.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('schedule')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(
+    private readonly scheduleService: ScheduleService,
+    private userService: UsersService,
+  ) {}
 
+  @UseGuards(AuthsGuard)
   @Post()
-  create(@Body() createScheduleDto: CreateScheduleDto) {
+  async create(@Body() createScheduleDto: Schedule, @Request() req): Promise<Schedule> {
+    const barber = await this.userService.findbyID(createScheduleDto.barber);
+    if (!barber) {
+      throw new HttpException('Barbeiro nao encontrado', HttpStatus.FORBIDDEN);
+    }
+    console.log('Salvando a marcacao...');
+    createScheduleDto.barber = barber;
+    createScheduleDto.user = req.user;
+    console.log(createScheduleDto);
     return this.scheduleService.create(createScheduleDto);
   }
 
+  @UseGuards(AuthsGuard)
   @Get()
   findAll() {
     return this.scheduleService.findAll();
@@ -22,13 +47,10 @@ export class ScheduleController {
     return this.scheduleService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
-    return this.scheduleService.update(+id, updateScheduleDto);
-  }
-
+  @UseGuards(AuthsGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deleteUser(@Param('id') id: string) {
+    console.log('apagando...');
     return this.scheduleService.remove(+id);
   }
 }

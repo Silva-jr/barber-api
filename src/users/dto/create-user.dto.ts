@@ -8,5 +8,13 @@ export class CreateUserDto {
   @ApiProperty()
   password: string;
   @ApiProperty()
-  isBarber: boolean;
+  isBarber: boolean=false;
+
+  startTime?: string;
+
+  endTime?: string;
+
+  startDay?: string;
+
+  endDay?: string;
 }

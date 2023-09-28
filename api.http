@@ -19,3 +19,13 @@ Content-Type: application/json
     "password": "admin2",
     "isBarber": true
 }
+
+
+###
+POST http://localhost:3000/api/schedule
+Content-Type: application/json
+{
+    "date": "2023-06-19",
+    "time":"12:30:05",
+    "barber": "648421125c78bb488963fdea"
+}

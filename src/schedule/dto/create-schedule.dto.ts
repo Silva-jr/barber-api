@@ -1,7 +1,13 @@
-import { User } from "src/users/entities/user.entity";
-
-export class CreateScheduleDto {       
-    readonly date: string;
-    readonly time: string;
-    readonly barber: User;   
+import { ApiProperty } from '@nestjs/swagger';
+import * as mongoose from "mongoose";
+export class CreateScheduleDto {
+  @ApiProperty()
+  date: string;
+  @ApiProperty()
+  time: string;
+  @ApiProperty()
+  barber: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  };;
 }

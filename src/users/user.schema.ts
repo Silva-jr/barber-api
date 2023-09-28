@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { timeStamp } from 'console';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop()
   username: String;
@@ -12,6 +13,14 @@ export class User {
   password: String;
   @Prop()
   isBarber: Boolean;
+  @Prop()
+  startTime?: string;
+  @Prop()
+  endTime?: string;
+  @Prop()
+  startDay?: string;
+  @Prop()
+  endDay?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

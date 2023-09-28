@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<User> {
-    const user = await this.usersService.findbyUsername(username);
+    const user = await this.usersService.findbyEmail(username);
     if (!user) {
       console.log('user não encontrado');
       throw new NotAcceptableException('user não encontrado');
@@ -35,15 +35,15 @@ export class AuthService {
   }
 
   async login(authDto: AuthDto) {
-    const user = this.validateUser(authDto?.username, authDto?.password);
+    const user = this.validateUser(authDto?.email, authDto?.password);
     const payload = {
       username: (await user)?.username,
-      sub: (await user)?._id,
+      email: (await user)?.email,
+      _id: (await user)?._id,
     };
 
     console.log(payload);
    const access_token: string = await this.jwtService.signAsync({payload},{secret: JWT_SECRET} )
     return {access_token};
-    //,
   }
 }
